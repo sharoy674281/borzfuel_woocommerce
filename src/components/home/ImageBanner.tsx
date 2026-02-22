@@ -20,7 +20,10 @@ export default function ImageBanner() {
         <h2 className="text-3xl sm:text-4xl font-bold text-white uppercase tracking-tight leading-tight">
           Kreatin Tyggetabletter
         </h2>
-        <p className="mt-3 text-white/80 text-sm max-w-sm font-light">
+        <p
+          className="mt-3 text-white text-sm max-w-sm font-light"
+          style={{ textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}
+        >
           Enkel og effektiv kreatin du kan ta hvor som helst. Ingen shaker nødvendig.
         </p>
         <Link

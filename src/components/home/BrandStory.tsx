@@ -33,9 +33,8 @@ export default function BrandStory() {
 						for de som trener hardt og konkurrerer ofte.
 					</p>
 					<p className="text-neutral-500 text-sm leading-relaxed mb-8">
-						&laquo;Borz&raquo; betyr ulv på tsjetsjensk — styrke,
-						utholdenhet og viljestyrke. Norskprodusert med
-						GMP-sertifisering.
+						Alle produktene våre er GMP-sertifisert og utviklet
+						med fokus på kvalitet, effekt og enkel bruk.
 					</p>
 					<Link
 						href="/butikk"

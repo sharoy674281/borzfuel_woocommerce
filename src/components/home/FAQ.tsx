@@ -3,11 +3,11 @@
 import { useState } from "react";
 
 const faqs = [
-  { q: "Hva er leveringstiden?", a: "Vi sender fra Norge og levering tar vanligvis 1-3 virkedager." },
-  { q: "Er det gratis frakt?", a: "Ja, vi tilbyr gratis frakt på alle bestillinger i Norge." },
+  { q: "Hva er leveringstiden?", a: "Levering tar vanligvis 3-7 virkedager avhengig av fraktmetode." },
+  { q: "Er det gratis frakt?", a: "Gratis frakt på bestillinger over kr 1 000. Under dette koster frakt fra kr 49 for pakke i postkassen og kr 179 for hentested." },
   { q: "Kan jeg returnere produkter?", a: "Ja, du har 14 dagers angrerett i henhold til norsk lov." },
-  { q: "Er produktene GMP-sertifisert?", a: "Ja, alle våre produkter er norskprodusert med GMP-sertifisering og streng kvalitetskontroll." },
-  { q: "Hvordan bruker jeg kreatin-tyggetablettene?", a: "Tygg 3-4 tabletter daglig. Kan tas når som helst — før eller etter trening, eller mellom måltider." },
+  { q: "Er produktene GMP-sertifisert?", a: "Ja, produktene våre er produsert med GMP-sertifisering og streng kvalitetskontroll." },
+  { q: "Hvordan bruker jeg kreatin-tyggetablettene?", a: "Tygg 2 tabletter daglig. Kan tas når som helst — før eller etter trening, eller mellom måltider." },
 ];
 
 export default function FAQ() {
