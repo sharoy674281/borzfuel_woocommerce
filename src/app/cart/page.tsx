@@ -126,8 +126,8 @@ export default function CartPage() {
               <div className="text-[11px] text-neutral-400 space-y-1">
                 {!freeShipping && (
                   <>
+                    <p>Postkassen: fra kr 49</p>
                     <p>Hentested: {formatPrice(PICKUP_SHIPPING_COST)}</p>
-                    <p>Hjem/postkasse: beregnes i kassen</p>
                     <p>
                       Gratis frakt over{" "}
                       {formatPrice(FREE_SHIPPING_THRESHOLD)}

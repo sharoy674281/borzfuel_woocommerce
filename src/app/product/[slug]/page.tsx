@@ -99,6 +99,7 @@ export default async function ProductPage({
     title: "Frakt",
     content: (
       <div className="space-y-2">
+        <p>Pakke i postkassen: fra kr 49</p>
         <p>Pakke til hentested: kr 179</p>
         <p>Gratis frakt ved bestilling over kr 1 000</p>
         <p className="text-neutral-400 text-xs mt-2">

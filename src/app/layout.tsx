@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import CookieBanner from "@/components/CookieBanner";
 import "./globals.css";
 
 const inter = Inter({
@@ -60,6 +61,7 @@ export default function RootLayout({
           <Header />
           <main className="flex-1 bg-white">{children}</main>
           <Footer />
+          <CookieBanner />
         </CartProvider>
       </body>
     </html>

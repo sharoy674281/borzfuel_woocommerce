@@ -15,7 +15,7 @@ export default function Footer() {
               className="h-30 w-auto brightness-0 mb-3"
             />
             <p className="text-xs text-neutral-400 leading-relaxed">
-              Premium kosttilskudd for kampsportutøvere. Norskprodusert.
+              Premium kosttilskudd for kampsportutøvere.
             </p>
           </div>
 
@@ -40,10 +40,19 @@ export default function Footer() {
             <h4 className="text-[11px] font-semibold text-black uppercase tracking-[0.15em] mb-4">
               Info
             </h4>
-            <nav className="flex flex-col gap-2.5 text-xs text-neutral-400">
-              <span>Vilkår & Personvern</span>
-              <span>Frakt & Levering</span>
-              <span>Retur & Reklamasjon</span>
+            <nav className="flex flex-col gap-2.5 text-xs">
+              <Link href="/vilkar-personvern" className="text-neutral-400 hover:text-black transition-colors">
+                Vilkår & Personvern
+              </Link>
+              <Link href="/frakt-levering" className="text-neutral-400 hover:text-black transition-colors">
+                Frakt & Levering
+              </Link>
+              <Link href="/retur-reklamasjon" className="text-neutral-400 hover:text-black transition-colors">
+                Retur & Reklamasjon
+              </Link>
+              <Link href="/kjopsvilkar" className="text-neutral-400 hover:text-black transition-colors">
+                Kjøpsvilkår
+              </Link>
             </nav>
           </div>
 
@@ -52,8 +61,8 @@ export default function Footer() {
               Kontakt
             </h4>
             <div className="flex flex-col gap-2.5 text-xs text-neutral-400">
-              <a href="mailto:support@borzfuelnutrition.com" className="hover:text-black transition-colors">
-                support@borzfuelnutrition.com
+              <a href="mailto:support@borzfuelnutrition.no" className="hover:text-black transition-colors">
+                support@borzfuelnutrition.no
               </a>
               <a href="tel:+4798069142" className="hover:text-black transition-colors">
                 980 69 142
