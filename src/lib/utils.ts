@@ -3,5 +3,6 @@ export function cn(...classes: (string | false | null | undefined)[]) {
 }
 
 export function formatPrice(price: string | number) {
-  return `$${Number(price).toFixed(2)}`;
+  const num = Number(price);
+  return `kr ${num % 1 === 0 ? num : num.toFixed(2)}`;
 }

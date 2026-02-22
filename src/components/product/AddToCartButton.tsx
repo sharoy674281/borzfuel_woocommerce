@@ -24,7 +24,7 @@ export default function AddToCartButton({ product }: { product: WooProduct }) {
 
   return (
     <Button onClick={handleAdd} size="lg" className="w-full">
-      {added ? "Added!" : "Add to Cart"}
+      {added ? "Lagt til!" : "Legg i handlekurv"}
     </Button>
   );
 }

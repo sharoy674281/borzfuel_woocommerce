@@ -1,28 +1,35 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme inline {
+  --color-bg: #ffffff;
+  --color-surface: #f5f5f5;
+  --color-border: #e5e5e5;
+  --color-text: #111111;
+  --color-text-secondary: #666666;
+  --color-accent: #111111;
+  --color-sale: #dc2626;
+  --font-sans: var(--font-inter);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Force light mode regardless of system preference */
+html,
+html[data-theme="dark"],
+:root {
+  color-scheme: light only;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html, body {
+    background-color: #ffffff !important;
+    color: #111111 !important;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  background: #ffffff;
+  color: #111111;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -31,4 +38,86 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
   text-wrap: pretty;
+}
+
+::selection {
+  background: #111;
+  color: #fff;
+}
+
+/* WooCommerce product description styling */
+.product-description {
+  text-align: left;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #666666;
+}
+
+.product-description h1,
+.product-description h2,
+.product-description h3,
+.product-description h4,
+.product-description h5,
+.product-description h6 {
+  color: #111111;
+  font-weight: 600;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+.product-description h2 { font-size: 22px; }
+.product-description h3 { font-size: 18px; }
+.product-description p { margin-bottom: 1em; }
+
+.product-description strong,
+.product-description b {
+  color: #111111;
+  font-weight: 600;
+}
+
+.product-description ul,
+.product-description ol {
+  padding-left: 1.25em;
+  margin-bottom: 1em;
+}
+
+.product-description ul { list-style-type: disc; }
+.product-description ol { list-style-type: decimal; }
+.product-description li { margin-bottom: 0.35em; }
+
+.product-description table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 14px;
+}
+
+.product-description table th {
+  text-align: left;
+  font-weight: 600;
+  color: #111111;
+  padding: 10px 12px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.product-description table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e5e5;
+  color: #666666;
+}
+
+.product-description table tr:last-child td {
+  border-bottom: none;
+}
+
+.product-description a {
+  color: #111111;
+  text-decoration: underline;
+}
+
+.product-description img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5em 0;
 }

@@ -1,24 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "BorzFuel Nutrition — Premium Supplements",
+  title: "BorzFuel Nutrition — Kosttilskudd for Kampsport",
   description:
-    "High-quality sports nutrition and supplements. Fuel your performance with BorzFuel.",
+    "Premium kosttilskudd for kampsportutøvere. Kreatin, leddstøtte og mer. Norskprodusert.",
 };
 
 export default function RootLayout({
@@ -27,13 +22,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="no" data-theme="light" style={{ colorScheme: "light" }}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${inter.variable} antialiased min-h-screen flex flex-col`}
+        style={{ backgroundColor: "#ffffff", color: "#111111" }}
       >
         <CartProvider>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 bg-white">{children}</main>
           <Footer />
         </CartProvider>
       </body>

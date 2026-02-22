@@ -15,16 +15,16 @@ export default function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:pointer-events-none",
+        "inline-flex items-center justify-center font-semibold uppercase tracking-wider transition-colors disabled:opacity-40 disabled:pointer-events-none cursor-pointer",
         variant === "primary" &&
-          "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200",
+          "bg-[#111] text-white hover:bg-[#333]",
         variant === "secondary" &&
-          "border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800",
+          "border border-[#111] text-[#111] hover:bg-[#111] hover:text-white",
         variant === "ghost" &&
-          "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800",
-        size === "sm" && "px-3 py-1.5 text-sm",
-        size === "md" && "px-5 py-2.5 text-sm",
-        size === "lg" && "px-6 py-3 text-base",
+          "text-[#111] underline hover:opacity-60",
+        size === "sm" && "px-4 py-2 text-xs",
+        size === "md" && "px-6 py-2.5 text-xs",
+        size === "lg" && "px-8 py-3.5 text-xs",
         className
       )}
       {...props}
