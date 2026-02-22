@@ -5,7 +5,8 @@
       "Bash(head:*)",
       "Bash(node:*)",
       "Bash(npm run build:*)",
-      "WebFetch(domain:borzfuelnutrition.com)"
+      "WebFetch(domain:borzfuelnutrition.com)",
+      "Bash(curl:*)"
     ]
   }
 }

@@ -2,13 +2,30 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import api from "@/lib/woocommerce";
-import { WooProduct } from "@/types/woocommerce";
+import { WooProduct, WooReview } from "@/types/woocommerce";
 import { formatPrice } from "@/lib/utils";
 import AddToCartButton from "@/components/product/AddToCartButton";
+import ProductAccordion from "@/components/product/ProductAccordion";
+import PaymentIcons from "@/components/product/PaymentIcons";
+import ProductTabs from "@/components/product/ProductTabs";
+import ProductGallery from "@/components/product/ProductGallery";
+import StarRatingLink from "@/components/product/StarRatingLink";
 
 async function getProduct(slug: string): Promise<WooProduct | null> {
   const { data } = await api.get("products", { slug });
   return data[0] ?? null;
+}
+
+async function getProductReviews(productId: number): Promise<WooReview[]> {
+  try {
+    const { data } = await api.get("products/reviews", {
+      product: productId,
+      per_page: 20,
+    });
+    return data;
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -41,6 +58,41 @@ export default async function ProductPage({
     );
   }
 
+  const reviews = await getProductReviews(product.id);
+
+  // Extract ingredients from meta_data
+  const ingredientsMeta = product.meta_data?.find(
+    (m) => m.key === "ingredienser" || m.key === "ingredients"
+  );
+
+  // Build accordion items
+  const accordionItems: { title: string; content: React.ReactNode }[] = [];
+
+  if (ingredientsMeta?.value) {
+    accordionItems.push({
+      title: "Ingredienser",
+      content: <p>{ingredientsMeta.value}</p>,
+    });
+  }
+
+  accordionItems.push({
+    title: "Frakt",
+    content: (
+      <div className="space-y-2">
+        <p>Pakke til hentested: kr 179</p>
+        <p>Gratis frakt ved bestilling over kr 1 000</p>
+        <p className="text-neutral-400 text-xs mt-2">
+          Eksakt pris beregnes i kassen (Bring Fraktguiden)
+        </p>
+      </div>
+    ),
+  });
+
+  accordionItems.push({
+    title: "Betaling",
+    content: <PaymentIcons />,
+  });
+
   return (
     <div className="bg-white">
       {/* Breadcrumb */}
@@ -56,29 +108,26 @@ export default async function ProductPage({
 
       <section className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid md:grid-cols-2 gap-12 items-start">
-          {/* Image */}
-          <div className="relative aspect-square bg-neutral-50 overflow-hidden">
-            {product.on_sale && (
-              <span className="absolute top-4 left-4 z-10 px-3 py-1 bg-red-600 text-white text-[10px] font-medium uppercase tracking-wider">
-                Salg
-              </span>
-            )}
-            {product.images[0] && (
-              <Image
-                src={product.images[0].src}
-                alt={product.images[0].alt || product.name}
-                fill
-                className="object-contain p-10"
-                priority
-              />
-            )}
-          </div>
+          {/* Images */}
+          <ProductGallery
+            images={product.images}
+            productName={product.name}
+            onSale={product.on_sale}
+          />
 
           {/* Info */}
           <div className="py-4">
             <h1 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-tight">
               {product.name}
             </h1>
+
+            {/* Star rating + review count */}
+            {product.rating_count > 0 && (
+              <StarRatingLink
+                averageRating={product.average_rating}
+                ratingCount={product.rating_count}
+              />
+            )}
 
             <div className="mt-4 flex items-center gap-3">
               {product.on_sale && product.regular_price && (
@@ -89,6 +138,25 @@ export default async function ProductPage({
               <span className="text-xl font-semibold text-black">
                 {formatPrice(product.price)}
               </span>
+            </div>
+
+            {/* Stock status */}
+            <div className="mt-3">
+              {product.stock_status === "instock" && (
+                <span className="text-xs font-medium text-green-600">
+                  På lager
+                </span>
+              )}
+              {product.stock_status === "outofstock" && (
+                <span className="text-xs font-medium text-red-600">
+                  Ikke på lager
+                </span>
+              )}
+              {product.stock_status === "onbackorder" && (
+                <span className="text-xs font-medium text-amber-600">
+                  Restordre
+                </span>
+              )}
             </div>
 
             {product.short_description && (
@@ -102,38 +170,13 @@ export default async function ProductPage({
               <AddToCartButton product={product} />
             </div>
 
-            <div className="mt-10 space-y-3 text-[11px] text-neutral-400 uppercase tracking-[0.1em]">
-              <div className="flex items-center gap-3">
-                <span className="w-1 h-1 bg-black rounded-full" />
-                Gratis frakt i hele Norge
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="w-1 h-1 bg-black rounded-full" />
-                1-3 virkedager levering
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="w-1 h-1 bg-black rounded-full" />
-                Norskprodusert &middot; GMP-sertifisert
-              </div>
-            </div>
+            <ProductAccordion items={accordionItems} />
           </div>
         </div>
       </section>
 
-      {/* Product description */}
-      {product.description && (
-        <section className="border-t border-neutral-200 bg-white">
-          <div className="mx-auto max-w-7xl px-6 py-16">
-            <h2 className="text-sm font-semibold text-black uppercase tracking-[0.15em] mb-8">
-              Om produktet
-            </h2>
-            <div
-              className="product-description max-w-3xl"
-              dangerouslySetInnerHTML={{ __html: product.description }}
-            />
-          </div>
-        </section>
-      )}
+      {/* Product tabs: Beskrivelse, Tilleggsinformasjon, Omtaler */}
+      <ProductTabs product={product} reviews={reviews} />
     </div>
   );
 }

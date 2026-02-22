@@ -5,6 +5,8 @@ import {
   useContext,
   useReducer,
   useEffect,
+  useState,
+  useCallback,
   type ReactNode,
 } from "react";
 import type { CartItem } from "@/types/cart";
@@ -20,6 +22,13 @@ interface CartState {
   items: CartItem[];
 }
 
+export interface AppliedCoupon {
+  code: string;
+  discount_type: string;
+  amount: string;
+  minimum_amount: string;
+}
+
 interface CartContextValue extends CartState {
   addItem: (item: CartItem) => void;
   removeItem: (id: number) => void;
@@ -27,6 +36,13 @@ interface CartContextValue extends CartState {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  drawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
+  coupon: AppliedCoupon | null;
+  couponDiscount: number;
+  applyCoupon: (coupon: AppliedCoupon) => void;
+  removeCoupon: () => void;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -71,16 +87,26 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 }
 
 const CART_STORAGE_KEY = "borzfuel-cart";
+const COUPON_STORAGE_KEY = "borzfuel-coupon";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
 
-  // Load cart from localStorage on mount
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+
+  // Load cart and coupon from localStorage on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
       if (saved) {
         dispatch({ type: "LOAD_CART", payload: JSON.parse(saved) });
+      }
+      const savedCoupon = localStorage.getItem(COUPON_STORAGE_KEY);
+      if (savedCoupon) {
+        setCoupon(JSON.parse(savedCoupon));
       }
     } catch {}
   }, []);
@@ -90,8 +116,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state.items));
   }, [state.items]);
 
-  const addItem = (item: CartItem) =>
-    dispatch({ type: "ADD_ITEM", payload: item });
+  // Persist coupon to localStorage
+  useEffect(() => {
+    if (coupon) {
+      localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(coupon));
+    } else {
+      localStorage.removeItem(COUPON_STORAGE_KEY);
+    }
+  }, [coupon]);
+
+  const addItem = useCallback(
+    (item: CartItem) => {
+      dispatch({ type: "ADD_ITEM", payload: item });
+      openDrawer();
+    },
+    [openDrawer]
+  );
 
   const removeItem = (id: number) =>
     dispatch({ type: "REMOVE_ITEM", payload: id });
@@ -99,13 +139,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const updateQuantity = (id: number, quantity: number) =>
     dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } });
 
-  const clearCart = () => dispatch({ type: "CLEAR_CART" });
+  const clearCart = () => {
+    dispatch({ type: "CLEAR_CART" });
+    setCoupon(null);
+  };
 
   const totalItems = state.items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = state.items.reduce(
     (sum, i) => sum + Number(i.price) * i.quantity,
     0
   );
+
+  // Calculate coupon discount
+  let couponDiscount = 0;
+  if (coupon) {
+    const minAmount = parseFloat(coupon.minimum_amount) || 0;
+    if (totalPrice >= minAmount) {
+      if (coupon.discount_type === "percent") {
+        couponDiscount = totalPrice * (parseFloat(coupon.amount) / 100);
+      } else {
+        // fixed_cart or fixed_product
+        couponDiscount = Math.min(parseFloat(coupon.amount), totalPrice);
+      }
+    }
+  }
+
+  const applyCoupon = useCallback((c: AppliedCoupon) => setCoupon(c), []);
+  const removeCoupon = useCallback(() => setCoupon(null), []);
 
   return (
     <CartContext.Provider
@@ -117,6 +177,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        drawerOpen,
+        openDrawer,
+        closeDrawer,
+        coupon,
+        couponDiscount,
+        applyCoupon,
+        removeCoupon,
       }}
     >
       {children}

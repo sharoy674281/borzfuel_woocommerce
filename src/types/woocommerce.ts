@@ -1,3 +1,9 @@
+export interface WooMetaData {
+  id: number;
+  key: string;
+  value: string;
+}
+
 export interface WooProduct {
   id: number;
   name: string;
@@ -9,8 +15,14 @@ export interface WooProduct {
   sale_price: string;
   on_sale: boolean;
   stock_status: string;
+  stock_quantity: number | null;
+  manage_stock: boolean;
   images: WooImage[];
   categories: WooCategory[];
+  meta_data: WooMetaData[];
+  average_rating: string;
+  rating_count: number;
+  weight: string;
 }
 
 export interface WooImage {
@@ -59,5 +71,18 @@ export interface WooOrder {
   payment_method_title: string;
   set_paid?: boolean;
   transaction_id?: string;
-  meta_data?: { key: string; value: string }[];
+  meta_data?: WooMetaData[];
+  order_key?: string;
+}
+
+export interface WooReview {
+  id: number;
+  date_created: string;
+  reviewer: string;
+  reviewer_email: string;
+  review: string;
+  rating: number;
+  verified: boolean;
+  reviewer_avatar_urls: Record<string, string>;
+  meta_data?: WooMetaData[];
 }

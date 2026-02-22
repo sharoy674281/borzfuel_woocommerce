@@ -3,17 +3,20 @@ import Link from "next/link";
 export default function Hero() {
   return (
     <section className="relative w-full h-[90vh] min-h-[600px] max-h-[950px] overflow-hidden bg-black">
-      {/*
-        PLACEHOLDER: Bytt ut denne diven med et ekte bilde.
-        Anbefalt: Competition-bilde, treningsbilde, eller lifestyle-shot.
-        Bruk: <Image src="/hero.jpg" alt="..." fill className="object-cover" priority />
-      */}
-      <div className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
-        <div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h60v60H0z\' fill=\'none\'/%3E%3Cpath d=\'M30 0v60M0 30h60\' stroke=\'%23fff\' stroke-width=\'.5\'/%3E%3C/svg%3E")', backgroundSize: '60px 60px'}} />
-      </div>
+      {/* Background video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover opacity-60"
+      >
+        <source src="/havoc bjoroy.mp4" type="video/mp4" />
+        <source src="/havoc bjoroy.mov" type="video/quicktime" />
+      </video>
 
       {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/30" />
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-end h-full text-center px-6 pb-20">

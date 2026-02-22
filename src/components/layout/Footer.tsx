@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -6,10 +7,13 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-14">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2 md:col-span-1">
-            {/* PLACEHOLDER: Bytt med logo — <Image src="/logo.svg" ... /> */}
-            <h3 className="text-sm font-bold text-black uppercase tracking-wider mb-3">
-              BorzFuel
-            </h3>
+            <Image
+              src="/logo borzfuel.png"
+              alt="BorzFuel"
+              width={120}
+              height={40}
+              className="h-30 w-auto brightness-0 mb-3"
+            />
             <p className="text-xs text-neutral-400 leading-relaxed">
               Premium kosttilskudd for kampsportutøvere. Norskprodusert.
             </p>
