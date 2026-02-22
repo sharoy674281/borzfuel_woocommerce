@@ -16,9 +16,13 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
     (m) => m.key === "ingredienser" || m.key === "ingredients"
   );
 
+  const hasAdditionalInfo = !!(product.weight || ingredientsMeta?.value);
+
   const tabs = [
     { label: "Beskrivelse", key: "description" },
-    { label: "Tilleggsinformasjon", key: "info" },
+    ...(hasAdditionalInfo
+      ? [{ label: "Tilleggsinformasjon", key: "info" }]
+      : []),
     { label: `Omtaler (${product.rating_count})`, key: "reviews" },
   ];
 
@@ -44,19 +48,19 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
         </div>
 
         {/* Tab content */}
-        {activeTab === 0 && product.description && (
+        {tabs[activeTab]?.key === "description" && product.description && (
           <div
             className="product-description max-w-3xl"
             dangerouslySetInnerHTML={{ __html: product.description }}
           />
         )}
-        {activeTab === 0 && !product.description && (
+        {tabs[activeTab]?.key === "description" && !product.description && (
           <p className="text-sm text-neutral-400">
             Ingen beskrivelse tilgjengelig.
           </p>
         )}
 
-        {activeTab === 1 && (
+        {tabs[activeTab]?.key === "info" && (
           <div className="max-w-3xl space-y-4">
             <table className="w-full text-sm">
               <tbody>
@@ -80,36 +84,12 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
                     </td>
                   </tr>
                 )}
-                {product.meta_data
-                  ?.filter(
-                    (m) =>
-                      m.key !== "ingredienser" &&
-                      m.key !== "ingredients" &&
-                      !m.key.startsWith("_")
-                  )
-                  .map((m) => (
-                    <tr key={m.id} className="border-b border-neutral-100">
-                      <td className="py-3 font-medium text-neutral-700 w-40 capitalize">
-                        {m.key.replace(/_/g, " ")}
-                      </td>
-                      <td className="py-3 text-neutral-500">{m.value}</td>
-                    </tr>
-                  ))}
               </tbody>
             </table>
-            {!product.weight &&
-              !ingredientsMeta?.value &&
-              !product.meta_data?.filter(
-                (m) => !m.key.startsWith("_")
-              ).length && (
-                <p className="text-sm text-neutral-400">
-                  Ingen tilleggsinformasjon tilgjengelig.
-                </p>
-              )}
           </div>
         )}
 
-        {activeTab === 2 && (
+        {tabs[activeTab]?.key === "reviews" && (
           <ProductReviews
             reviews={reviews}
             averageRating={product.average_rating}
