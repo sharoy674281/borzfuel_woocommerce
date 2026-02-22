@@ -94,6 +94,7 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
             reviews={reviews}
             averageRating={product.average_rating}
             ratingCount={product.rating_count}
+            productId={product.id}
             embedded
           />
         )}

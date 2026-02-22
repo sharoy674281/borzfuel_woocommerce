@@ -84,5 +84,6 @@ export interface WooReview {
   rating: number;
   verified: boolean;
   reviewer_avatar_urls: Record<string, string>;
+  review_images?: string[];
   meta_data?: WooMetaData[];
 }
