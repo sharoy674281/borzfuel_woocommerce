@@ -26,13 +26,13 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
     <section id="product-tabs" className="border-t border-neutral-200 bg-white">
       <div className="mx-auto max-w-7xl px-6 py-16">
         {/* Tab buttons */}
-        <div className="flex gap-8 border-b border-neutral-200 mb-8">
+        <div className="flex gap-4 sm:gap-8 border-b border-neutral-200 mb-8 overflow-x-auto">
           {tabs.map((tab, i) => (
             <button
               key={i}
               data-tab={tab.key}
               onClick={() => setActiveTab(i)}
-              className={`pb-3 text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors cursor-pointer ${
+              className={`pb-3 text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors cursor-pointer whitespace-nowrap ${
                 activeTab === i
                   ? "text-black border-b-2 border-black -mb-px"
                   : "text-neutral-400 hover:text-black"

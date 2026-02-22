@@ -94,7 +94,7 @@ export default async function ProductPage({
   });
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
       {/* Breadcrumb */}
       <div className="mx-auto max-w-7xl px-6 pt-6">
         <nav className="flex items-center gap-2 text-[11px] text-neutral-400 uppercase tracking-[0.1em]">
