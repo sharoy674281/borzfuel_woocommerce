@@ -36,9 +36,29 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) return { title: "Produkt ikke funnet" };
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://borzfuelnutrition.com";
+  const description = product.short_description.replace(/<[^>]+>/g, "").trim();
+
   return {
-    title: `${product.name} — BorzFuel Nutrition`,
-    description: product.short_description.replace(/<[^>]+>/g, ""),
+    title: product.name,
+    description,
+    openGraph: {
+      type: "website",
+      title: `${product.name} — Borzfuel Nutrition`,
+      description,
+      url: `${siteUrl}/product/${product.slug}`,
+      images: product.images[0]
+        ? [{ url: product.images[0].src, alt: product.name }]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.name} — Borzfuel Nutrition`,
+      description,
+      images: product.images[0] ? [product.images[0].src] : [],
+    },
   };
 }
 
@@ -93,8 +113,59 @@ export default async function ProductPage({
     content: <PaymentIcons />,
   });
 
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://borzfuelnutrition.com";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.short_description.replace(/<[^>]+>/g, "").trim(),
+    image: product.images.map((img) => img.src),
+    url: `${siteUrl}/product/${product.slug}`,
+    brand: {
+      "@type": "Brand",
+      name: "Borzfuel Nutrition",
+    },
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "NOK",
+      availability:
+        product.stock_status === "instock"
+          ? "https://schema.org/InStock"
+          : product.stock_status === "onbackorder"
+            ? "https://schema.org/PreOrder"
+            : "https://schema.org/OutOfStock",
+      url: `${siteUrl}/product/${product.slug}`,
+    },
+    ...(product.rating_count > 0 && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: product.average_rating,
+        reviewCount: product.rating_count,
+      },
+    }),
+    ...(reviews.length > 0 && {
+      review: reviews.map((r) => ({
+        "@type": "Review",
+        author: { "@type": "Person", name: r.reviewer },
+        datePublished: r.date_created,
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: r.rating,
+        },
+        reviewBody: r.review.replace(/<[^>]+>/g, "").trim(),
+      })),
+    }),
+  };
+
   return (
     <div className="bg-white overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Breadcrumb */}
       <div className="mx-auto max-w-7xl px-6 pt-6">
         <nav className="flex items-center gap-2 text-[11px] text-neutral-400 uppercase tracking-[0.1em]">

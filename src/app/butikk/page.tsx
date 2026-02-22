@@ -5,8 +5,9 @@ import { WooProduct } from "@/types/woocommerce";
 import ShopClient from "./ShopClient";
 
 export const metadata: Metadata = {
-  title: "Butikk — BorzFuel Nutrition",
-  description: "Se alle kosttilskudd fra BorzFuel. Filtrér etter kategori og finn det som passer deg.",
+  title: "Butikk",
+  description:
+    "Utforsk vårt utvalg av kosttilskudd for kampsportutøvere. Kreatin, leddstøtte og mer. GMP-sertifisert.",
 };
 
 async function getProducts(): Promise<WooProduct[]> {

@@ -10,10 +10,39 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://borzfuelnutrition.com";
+
 export const metadata: Metadata = {
-  title: "BorzFuel Nutrition — Kosttilskudd for Kampsport",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Borzfuel Nutrition — Kosttilskudd for kampsport",
+    template: "%s — Borzfuel Nutrition",
+  },
   description:
-    "Premium kosttilskudd for kampsportutøvere. Kreatin, leddstøtte og mer. Norskprodusert.",
+    "Premium kosttilskudd utviklet for kampsportutøvere. Kreatin, leddstøtte og mer. GMP-sertifisert. Rask levering i hele Norge.",
+  icons: {
+    icon: "/logo borzfuel.png",
+    apple: "/logo borzfuel.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "nb_NO",
+    siteName: "Borzfuel Nutrition",
+    title: "Borzfuel Nutrition — Kosttilskudd for kampsport",
+    description:
+      "Premium kosttilskudd utviklet for kampsportutøvere. Kreatin, leddstøtte og mer. GMP-sertifisert. Rask levering i hele Norge.",
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Borzfuel Nutrition — Kosttilskudd for kampsport",
+    description:
+      "Premium kosttilskudd utviklet for kampsportutøvere. Kreatin, leddstøtte og mer. GMP-sertifisert.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

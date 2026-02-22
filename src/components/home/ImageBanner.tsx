@@ -1,12 +1,16 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function ImageBanner() {
   return (
-    <section className="relative w-full h-[50vh] min-h-[350px] overflow-hidden bg-neutral-200">
-      {/*
-        PLACEHOLDER: Bytt ut med et ekte bilde — treningsbilde, grappling, competition.
-        Bruk: <Image src="/banner.jpg" alt="..." fill className="object-cover" />
-      */}
+    <section className="relative w-full h-[50vh] min-h-[350px] overflow-hidden bg-neutral-900">
+      <Image
+        src="/masse creatine tyggetabletter pakker.png"
+        alt="Kreatin Tyggetabletter"
+        fill
+        className="object-cover"
+        sizes="100vw"
+      />
       <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
 
       <div className="relative z-10 flex flex-col justify-center h-full max-w-7xl mx-auto px-6">
@@ -16,7 +20,7 @@ export default function ImageBanner() {
         <h2 className="text-3xl sm:text-4xl font-bold text-white uppercase tracking-tight leading-tight">
           Kreatin Tyggetabletter
         </h2>
-        <p className="mt-3 text-white/60 text-sm max-w-sm font-light">
+        <p className="mt-3 text-white/80 text-sm max-w-sm font-light">
           Enkel og effektiv kreatin du kan ta hvor som helst. Ingen shaker nødvendig.
         </p>
         <Link

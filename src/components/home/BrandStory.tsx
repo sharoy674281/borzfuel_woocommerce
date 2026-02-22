@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function BrandStory() {
   return (
-		<section className="mx-auto max-w-7xl px-6 py-20">
+		<section className="mx-auto max-w-7xl px-6 py-20 overflow-hidden">
 			<div className="grid md:grid-cols-2 min-h-[500px]">
 			{/* Left — Image */}
 			<div className="relative bg-neutral-100 min-h-[350px] md:min-h-0 overflow-hidden">
@@ -17,7 +17,7 @@ export default function BrandStory() {
 			</div>
 
 			{/* Right — Text */}
-			<div className="flex items-center bg-white px-8 sm:px-14 py-16">
+			<div className="flex items-center bg-white px-0 md:px-14 py-12 md:py-16">
 				<div className="max-w-md">
 					<p className="text-[11px] text-neutral-400 uppercase tracking-[0.3em] mb-4">
 						Vår historie
