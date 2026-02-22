@@ -5,7 +5,7 @@ export default function ImageBanner() {
   return (
     <section className="relative w-full h-[50vh] min-h-[350px] overflow-hidden bg-neutral-900">
       <Image
-        src="/masse creatine tyggetabletter pakker.png"
+        src="/bilde av creatine liggende.png"
         alt="Kreatin Tyggetabletter"
         fill
         className="object-cover"
