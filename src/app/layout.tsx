@@ -4,6 +4,7 @@ import { CartProvider } from "@/context/CartContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CookieBanner from "@/components/CookieBanner";
+import MetaPixel from "@/components/MetaPixel";
 import "./globals.css";
 
 const inter = Inter({
@@ -62,6 +63,7 @@ export default function RootLayout({
           <main className="flex-1 bg-white">{children}</main>
           <Footer />
           <CookieBanner />
+          <MetaPixel />
         </CartProvider>
       </body>
     </html>
