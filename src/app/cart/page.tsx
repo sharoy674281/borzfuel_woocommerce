@@ -9,7 +9,6 @@ import Button from "@/components/ui/Button";
 import type { AppliedCoupon } from "@/context/CartContext";
 
 const FREE_SHIPPING_THRESHOLD = 1000;
-const PICKUP_SHIPPING_COST = 179;
 
 export default function CartPage() {
   const {
@@ -118,33 +117,18 @@ export default function CartPage() {
               <div className="flex justify-between">
                 <span className="text-neutral-500">Frakt</span>
                 <span className="text-black">
-                  {freeShipping
-                    ? "Gratis"
-                    : `fra ${formatPrice(PICKUP_SHIPPING_COST)}`}
+                  {freeShipping ? "Gratis" : "Beregnes i kassen"}
                 </span>
               </div>
-              <div className="text-[11px] text-neutral-400 space-y-1">
-                {!freeShipping && (
-                  <>
-                    <p>Postkassen: fra kr 49</p>
-                    <p>Hentested: {formatPrice(PICKUP_SHIPPING_COST)}</p>
-                    <p>
-                      Gratis frakt over{" "}
-                      {formatPrice(FREE_SHIPPING_THRESHOLD)}
-                    </p>
-                  </>
-                )}
-                <p>Eksakt frakt beregnes i kassen</p>
-              </div>
+              {!freeShipping && (
+                <p className="text-[11px] text-neutral-400">
+                  Gratis frakt over {formatPrice(FREE_SHIPPING_THRESHOLD)}
+                </p>
+              )}
 
               <div className="border-t border-neutral-200 pt-3 flex justify-between font-semibold text-black">
-                <span>Estimert totalt</span>
-                <span>
-                  {formatPrice(
-                    subtotalAfterDiscount +
-                      (freeShipping ? 0 : PICKUP_SHIPPING_COST)
-                  )}
-                </span>
+                <span>Delsum</span>
+                <span>{formatPrice(subtotalAfterDiscount)}</span>
               </div>
             </div>
 

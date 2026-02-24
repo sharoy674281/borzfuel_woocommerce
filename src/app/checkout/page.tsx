@@ -42,7 +42,6 @@ export default function CheckoutPage() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Noe gikk galt");
 
-        clearCart();
         window.location.href = data.url;
       } catch (err) {
         setError(err instanceof Error ? err.message : "Noe gikk galt");
