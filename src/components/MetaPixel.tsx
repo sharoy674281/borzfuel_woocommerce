@@ -1,65 +1,56 @@
 "use client";
 
-import { useEffect } from "react";
+import Script from "next/script";
+import { useState, useEffect } from "react";
 import { getCookieConsent } from "./CookieBanner";
 
 const PIXEL_ID = "1983032115969822";
 
-declare global {
-  interface Window {
-    fbq?: (...args: unknown[]) => void;
-    _fbq?: (...args: unknown[]) => void;
-  }
-}
-
-function loadPixel() {
-  if (window.fbq) return;
-
-  const f = window;
-  const b = document;
-  const n = function (...args: unknown[]) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    n.callMethod
-      ? n.callMethod.apply(n, args)
-      : n.queue.push(args);
-  } as unknown as Window["fbq"] & {
-    callMethod?: (...args: unknown[]) => void;
-    queue: unknown[][];
-    loaded: boolean;
-    version: string;
-    push: (...args: unknown[]) => void;
-  };
-
-  n.push = n;
-  n.loaded = true;
-  n.version = "2.0";
-  n.queue = [];
-  f.fbq = n;
-  f._fbq = n;
-
-  const s = b.createElement("script");
-  s.async = true;
-  s.src = "https://connect.facebook.net/en_US/fbevents.js";
-  const first = b.getElementsByTagName("script")[0];
-  first?.parentNode?.insertBefore(s, first);
-
-  window.fbq!("init", PIXEL_ID);
-  window.fbq!("track", "PageView");
-}
-
 export default function MetaPixel() {
+  const [load, setLoad] = useState(false);
+
   useEffect(() => {
-    // Load if consent already given
-    const consent = getCookieConsent();
-    if (consent === "all") {
-      loadPixel();
+    if (getCookieConsent() === "all") {
+      setLoad(true);
     }
 
-    // Listen for future consent
-    const handler = () => loadPixel();
+    const handler = () => setLoad(true);
     window.addEventListener("cookie-consent-granted", handler);
     return () => window.removeEventListener("cookie-consent-granted", handler);
   }, []);
 
-  return null;
+  if (!load) return null;
+
+  return (
+    <>
+      <Script
+        id="meta-pixel"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '${PIXEL_ID}');
+            fbq('track', 'PageView');
+          `,
+        }}
+      />
+      <noscript>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          height="1"
+          width="1"
+          style={{ display: "none" }}
+          src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
+          alt=""
+        />
+      </noscript>
+    </>
+  );
 }
