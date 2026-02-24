@@ -1,10 +1,6 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Vilkår & Personvern",
-  description:
-    "Les om brukervilkår, personvern og informasjonskapsler hos Borzfuel Nutrition.",
-};
+import CookieSettings from "@/components/CookieSettings";
 
 export default function VilkarPersonvernPage() {
   return (
@@ -105,8 +101,11 @@ export default function VilkarPersonvernPage() {
               <li>Markedsføring (f.eks. Meta Pixel hvis aktivert)</li>
             </ul>
             <p className="mt-2">
-              Du kan når som helst slette cookies i nettleseren din.
+              Du kan når som helst endre dine cookie-innstillinger:
             </p>
+            <div className="mt-3">
+              <CookieSettings />
+            </div>
           </div>
 
           <div>
