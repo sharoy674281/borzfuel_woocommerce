@@ -3,6 +3,7 @@ import api from "@/lib/woocommerce";
 import { formatPrice } from "@/lib/utils";
 import type { WooOrder } from "@/types/woocommerce";
 import ClearCartOnMount from "./ClearCartOnMount";
+import PixelPurchase from "./PixelPurchase";
 
 async function getOrder(id: string): Promise<WooOrder | null> {
   try {
@@ -32,6 +33,15 @@ export default async function OrderPage({
   return (
     <div className="bg-white mx-auto max-w-[680px] px-6 py-16">
       <ClearCartOnMount />
+      <PixelPurchase
+        orderId={order.id}
+        total={order.total}
+        items={order.line_items.map((i) => ({
+          id: i.product_id,
+          name: i.name,
+          quantity: i.quantity,
+        }))}
+      />
 
       <div className="text-center mb-12">
         <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-green-50 border border-green-200 mb-5">

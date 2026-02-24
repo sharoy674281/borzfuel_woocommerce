@@ -10,6 +10,7 @@ import PaymentIcons from "@/components/product/PaymentIcons";
 import ProductTabs from "@/components/product/ProductTabs";
 import ProductGallery from "@/components/product/ProductGallery";
 import StarRatingLink from "@/components/product/StarRatingLink";
+import PixelViewContent from "@/components/product/PixelViewContent";
 
 async function getProduct(slug: string): Promise<WooProduct | null> {
   const { data } = await api.get("products", { slug });
@@ -163,6 +164,12 @@ export default async function ProductPage({
 
   return (
     <div className="bg-white overflow-x-hidden">
+      <PixelViewContent
+        productName={product.name}
+        productId={product.id}
+        price={product.price}
+        category={product.categories?.[0]?.name}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

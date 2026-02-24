@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import { trackPixelEvent } from "@/components/MetaPixel";
 
 export default function CheckoutPage() {
   const { items, clearCart, coupon } = useCart();
@@ -16,6 +17,18 @@ export default function CheckoutPage() {
     async function redirect() {
       setRedirecting(true);
       setError("");
+
+      const totalValue = items.reduce(
+        (sum, i) => sum + parseFloat(i.price) * i.quantity,
+        0
+      );
+      trackPixelEvent("InitiateCheckout", {
+        content_ids: items.map((i) => String(i.id)),
+        content_type: "product",
+        value: totalValue,
+        currency: "NOK",
+        num_items: items.reduce((sum, i) => sum + i.quantity, 0),
+      });
 
       try {
         const res = await fetch("/api/checkout", {

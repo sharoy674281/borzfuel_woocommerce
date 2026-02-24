@@ -6,6 +6,21 @@ import { getCookieConsent } from "./CookieBanner";
 
 const PIXEL_ID = "1983032115969822";
 
+// Helper to track events from anywhere
+export function trackPixelEvent(
+  event: string,
+  data?: Record<string, unknown>
+) {
+  if (typeof window !== "undefined" && (window as unknown as Record<string, unknown>).fbq) {
+    const fbq = (window as unknown as Record<string, (...args: unknown[]) => void>).fbq;
+    if (data) {
+      fbq("track", event, data);
+    } else {
+      fbq("track", event);
+    }
+  }
+}
+
 export default function MetaPixel() {
   const [load, setLoad] = useState(false);
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import Button from "@/components/ui/Button";
 import type { WooProduct } from "@/types/woocommerce";
+import { trackPixelEvent } from "@/components/MetaPixel";
 
 export default function AddToCartButton({ product }: { product: WooProduct }) {
   const { addItem } = useCart();
@@ -18,6 +19,14 @@ export default function AddToCartButton({ product }: { product: WooProduct }) {
       price: product.price,
       image: product.images[0]?.src || "",
       quantity,
+    });
+    trackPixelEvent("AddToCart", {
+      content_name: product.name,
+      content_ids: [String(product.id)],
+      content_type: "product",
+      value: parseFloat(product.price) * quantity,
+      currency: "NOK",
+      num_items: quantity,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
