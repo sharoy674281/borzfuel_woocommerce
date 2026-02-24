@@ -6,67 +6,57 @@ import { getCookieConsent } from "./CookieBanner";
 
 const PIXEL_ID = "1983032115969822";
 
-let pixelLoaded = false;
-let fbqReady = false;
-const pendingEvents: { event: string; data?: Record<string, unknown> }[] = [];
+let pixelInitialized = false;
 
-// Helper to track events from anywhere
+function getFbq(): ((...args: unknown[]) => void) | null {
+  const w = window as unknown as Record<string, unknown>;
+  return typeof w.fbq === "function" ? (w.fbq as (...args: unknown[]) => void) : null;
+}
+
+function initPixel() {
+  if (pixelInitialized) return;
+  pixelInitialized = true;
+
+  // Standard Meta Pixel snippet — uses internal queue, so all calls
+  // made before the script loads are automatically replayed.
+  /* eslint-disable */
+  (function (f: any, b: any, e: any, v: any, n?: any, t?: any, s?: any) {
+    if (f.fbq) return;
+    n = f.fbq = function () {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+    };
+    if (!f._fbq) f._fbq = n;
+    n.push = n;
+    n.loaded = !0;
+    n.version = "2.0";
+    n.queue = [];
+    t = b.createElement(e);
+    t.async = !0;
+    t.src = v;
+    s = b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t, s);
+  })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+  /* eslint-enable */
+
+  getFbq()!("init", PIXEL_ID);
+  getFbq()!("track", "PageView");
+}
+
+// Helper to track events from anywhere.
+// Because fbq has an internal queue, events are never lost —
+// they queue up and replay once fbevents.js finishes loading.
 export function trackPixelEvent(
   event: string,
   data?: Record<string, unknown>
 ) {
   if (typeof window === "undefined") return;
-
-  if (fbqReady && (window as unknown as Record<string, unknown>).fbq) {
-    const fbq = (window as unknown as Record<string, (...args: unknown[]) => void>).fbq;
-    if (data) {
-      fbq("track", event, data);
-    } else {
-      fbq("track", event);
-    }
+  const fbq = getFbq();
+  if (!fbq) return; // pixel not initialized (no consent)
+  if (data) {
+    fbq("track", event, data);
   } else {
-    // Queue events until pixel is ready
-    pendingEvents.push({ event, data });
+    fbq("track", event);
   }
-}
-
-function flushPendingEvents() {
-  if (!fbqReady) return;
-  while (pendingEvents.length > 0) {
-    const { event, data } = pendingEvents.shift()!;
-    trackPixelEvent(event, data);
-  }
-}
-
-function initPixel() {
-  if (pixelLoaded) return;
-  pixelLoaded = true;
-
-  // Init fbq queue before script loads
-  const n = function (...args: unknown[]) {
-    const fn = n as unknown as { callMethod?: (...a: unknown[]) => void; queue: unknown[][] };
-    fn.callMethod ? fn.callMethod(...args) : fn.queue.push(args);
-  };
-  Object.assign(n, { push: n, loaded: true, version: "2.0", queue: [] });
-  (window as unknown as Record<string, unknown>).fbq = n;
-  (window as unknown as Record<string, unknown>)._fbq = n;
-
-  // Load the script
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = "https://connect.facebook.net/en_US/fbevents.js";
-  script.onload = () => {
-    fbqReady = true;
-    flushPendingEvents();
-  };
-  document.head.appendChild(script);
-
-  // These get queued and execute when script loads
-  (window as unknown as Record<string, (...args: unknown[]) => void>).fbq("init", PIXEL_ID);
-  (window as unknown as Record<string, (...args: unknown[]) => void>).fbq("track", "PageView");
-
-  fbqReady = true;
-  flushPendingEvents();
 }
 
 export default function MetaPixel() {
@@ -85,10 +75,10 @@ export default function MetaPixel() {
     return () => window.removeEventListener("cookie-consent-granted", handleConsent);
   }, [handleConsent]);
 
-  // Track PageView on every route change
+  // Track PageView on every client-side navigation
   useEffect(() => {
-    if (pixelLoaded && (window as unknown as Record<string, unknown>).fbq) {
-      (window as unknown as Record<string, (...args: unknown[]) => void>).fbq("track", "PageView");
+    if (pixelInitialized) {
+      getFbq()?.("track", "PageView");
     }
   }, [pathname]);
 
