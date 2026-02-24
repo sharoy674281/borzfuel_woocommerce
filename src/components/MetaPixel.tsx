@@ -1,7 +1,6 @@
 "use client";
 
-import Script from "next/script";
-import { useState, useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { getCookieConsent } from "./CookieBanner";
 
 const PIXEL_ID = "1983032115969822";
@@ -21,51 +20,51 @@ export function trackPixelEvent(
   }
 }
 
+function initPixel() {
+  if ((window as unknown as Record<string, unknown>).fbq) return;
+
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = "https://connect.facebook.net/en_US/fbevents.js";
+  document.head.appendChild(script);
+
+  // Init fbq before script loads (queues commands)
+  const n = function (...args: unknown[]) {
+    (n as unknown as { callMethod?: (...a: unknown[]) => void; queue: unknown[][] }).callMethod
+      ? (n as unknown as { callMethod: (...a: unknown[]) => void }).callMethod(...args)
+      : (n as unknown as { queue: unknown[][] }).queue.push(args);
+  };
+  Object.assign(n, { push: n, loaded: true, version: "2.0", queue: [] });
+  (window as unknown as Record<string, unknown>).fbq = n;
+  (window as unknown as Record<string, unknown>)._fbq = n;
+
+  (window as unknown as Record<string, (...args: unknown[]) => void>).fbq("init", PIXEL_ID);
+  (window as unknown as Record<string, (...args: unknown[]) => void>).fbq("track", "PageView");
+
+  // Also add noscript pixel
+  const img = document.createElement("img");
+  img.height = 1;
+  img.width = 1;
+  img.style.display = "none";
+  img.src = `https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`;
+  document.body.appendChild(img);
+}
+
 export default function MetaPixel() {
-  const [load, setLoad] = useState(false);
-
-  useEffect(() => {
-    if (getCookieConsent() === "all") {
-      setLoad(true);
-    }
-
-    const handler = () => setLoad(true);
-    window.addEventListener("cookie-consent-granted", handler);
-    return () => window.removeEventListener("cookie-consent-granted", handler);
+  const handleConsent = useCallback(() => {
+    initPixel();
   }, []);
 
-  if (!load) return null;
+  useEffect(() => {
+    // Load immediately if consent already given
+    if (getCookieConsent() === "all") {
+      initPixel();
+    }
 
-  return (
-    <>
-      <Script
-        id="meta-pixel"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            !function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '${PIXEL_ID}');
-            fbq('track', 'PageView');
-          `,
-        }}
-      />
-      <noscript>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          height="1"
-          width="1"
-          style={{ display: "none" }}
-          src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
-          alt=""
-        />
-      </noscript>
-    </>
-  );
+    // Listen for future consent
+    window.addEventListener("cookie-consent-granted", handleConsent);
+    return () => window.removeEventListener("cookie-consent-granted", handleConsent);
+  }, [handleConsent]);
+
+  return null;
 }
