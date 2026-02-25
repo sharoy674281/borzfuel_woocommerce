@@ -43,35 +43,20 @@ function initPixel() {
 }
 
 // Helper to track events from anywhere.
-// Retries briefly if pixel isn't ready yet (e.g. on full page loads
-// where PixelPurchase useEffect runs before MetaPixel initializes).
+// Because fbq has an internal queue, events are never lost —
+// they queue up and replay once fbevents.js finishes loading.
 export function trackPixelEvent(
   event: string,
   data?: Record<string, unknown>
 ) {
   if (typeof window === "undefined") return;
-
-  function send() {
-    const fbq = getFbq();
-    if (!fbq) return false;
-    if (data) {
-      fbq("track", event, data);
-    } else {
-      fbq("track", event);
-    }
-    return true;
+  const fbq = getFbq();
+  if (!fbq) return; // pixel not initialized (no consent)
+  if (data) {
+    fbq("track", event, data);
+  } else {
+    fbq("track", event);
   }
-
-  if (send()) return;
-
-  // Retry a few times in case pixel initializes shortly after
-  let attempts = 0;
-  const interval = setInterval(() => {
-    attempts++;
-    if (send() || attempts >= 10) {
-      clearInterval(interval);
-    }
-  }, 500);
 }
 
 export default function MetaPixel() {
