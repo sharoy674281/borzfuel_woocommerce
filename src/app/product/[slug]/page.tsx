@@ -12,6 +12,8 @@ import ProductGallery from "@/components/product/ProductGallery";
 import StarRatingLink from "@/components/product/StarRatingLink";
 import PixelViewContent from "@/components/product/PixelViewContent";
 
+export const revalidate = 60;
+
 async function getProduct(slug: string): Promise<WooProduct | null> {
   const { data } = await api.get("products", { slug });
   return data[0] ?? null;

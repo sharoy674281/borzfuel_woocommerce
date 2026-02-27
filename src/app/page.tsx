@@ -12,6 +12,8 @@ import FAQ from "@/components/home/FAQ";
 import Newsletter from "@/components/home/Newsletter";
 import SocialGallery from "@/components/home/SocialGallery";
 
+export const revalidate = 60;
+
 async function getProducts(): Promise<WooProduct[]> {
   const { data } = await api.get("products", { per_page: 20 });
   return data;

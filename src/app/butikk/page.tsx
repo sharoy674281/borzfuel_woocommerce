@@ -4,6 +4,8 @@ import api from "@/lib/woocommerce";
 import { WooProduct } from "@/types/woocommerce";
 import ShopClient from "./ShopClient";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Butikk",
   description:
