@@ -11,8 +11,8 @@ export default function Hero() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover opacity-60"
       >
-        <source src="/havoc bjoroy.mp4" type="video/mp4" />
-        <source src="/havoc bjoroy.mov" type="video/quicktime" />
+        <source src="/bjoroyvideo.mp4" type="video/mp4" />
+        <source src="/bjoroyvideo.mov" type="video/quicktime" />
       </video>
 
       {/* Dark overlay for text readability */}
