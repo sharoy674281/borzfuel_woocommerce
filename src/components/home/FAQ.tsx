@@ -15,6 +15,23 @@ export default function FAQ() {
 
   return (
     <section className="mx-auto max-w-2xl px-6 py-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((faq) => ({
+              "@type": "Question",
+              name: faq.q,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: faq.a,
+              },
+            })),
+          }),
+        }}
+      />
       <h2 className="text-center text-2xl font-bold text-black uppercase tracking-tight mb-14">
         FAQ
       </h2>
@@ -37,11 +54,14 @@ export default function FAQ() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
               </svg>
             </button>
-            {open === i && (
-              <p className="pb-5 text-sm text-neutral-500 leading-relaxed">
-                {faq.a}
-              </p>
-            )}
+            {/* Always render answer in DOM for crawlers, toggle visibility with CSS */}
+            <p
+              className={`text-sm text-neutral-500 leading-relaxed transition-all duration-200 overflow-hidden ${
+                open === i ? "pb-5 max-h-40 opacity-100" : "max-h-0 opacity-0"
+              }`}
+            >
+              {faq.a}
+            </p>
           </div>
         ))}
       </div>

@@ -8,7 +8,7 @@ export default function BrandStory() {
 			{/* Left — Image */}
 			<div className="relative bg-neutral-100 min-h-[350px] md:min-h-0 overflow-hidden">
 				<Image
-					src="https://borzfuelnutrition.com/wp-content/uploads/2025/11/armin-og-august-scaled.jpg"
+					src="https://checkout.borzfuelnutrition.com/wp-content/uploads/2025/11/armin-og-august-scaled.jpg"
 					alt="BorzFuel utøver på matta"
 					fill
 					className="object-cover"

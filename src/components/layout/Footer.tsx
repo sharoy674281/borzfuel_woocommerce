@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2 md:col-span-1">
             <Image
-              src="/logo borzfuel.png"
+              src="/logo-borzfuel.png"
               alt="BorzFuel"
               width={120}
               height={40}
@@ -52,6 +52,12 @@ export default function Footer() {
               </Link>
               <Link href="/kjopsvilkar" className="text-neutral-400 hover:text-black transition-colors">
                 Kjøpsvilkår
+              </Link>
+              <Link href="/om-oss" className="text-neutral-400 hover:text-black transition-colors">
+                Om oss
+              </Link>
+              <Link href="/blogg" className="text-neutral-400 hover:text-black transition-colors">
+                Blogg
               </Link>
             </nav>
           </div>

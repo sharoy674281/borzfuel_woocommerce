@@ -14,6 +14,18 @@ import PixelViewContent from "@/components/product/PixelViewContent";
 
 export const revalidate = 60;
 
+export async function generateStaticParams() {
+  try {
+    const { data: products }: { data: WooProduct[] } = await api.get(
+      "products",
+      { per_page: 100 }
+    );
+    return products.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
+}
+
 async function getProduct(slug: string): Promise<WooProduct | null> {
   const { data } = await api.get("products", { slug });
   return data[0] ?? null;
@@ -47,8 +59,11 @@ export async function generateMetadata({
   return {
     title: product.name,
     description,
+    alternates: {
+      canonical: `/product/${product.slug}`,
+    },
     openGraph: {
-      type: "website",
+      type: "article",
       title: `${product.name} — Borzfuel Nutrition`,
       description,
       url: `${siteUrl}/product/${product.slug}`,
@@ -120,6 +135,30 @@ export default async function ProductPage({
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "https://borzfuelnutrition.com";
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Hjem",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Butikk",
+        item: `${siteUrl}/butikk`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+      },
+    ],
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -127,6 +166,7 @@ export default async function ProductPage({
     description: product.short_description.replace(/<[^>]+>/g, "").trim(),
     image: product.images.map((img) => img.src),
     url: `${siteUrl}/product/${product.slug}`,
+    sku: String(product.id),
     brand: {
       "@type": "Brand",
       name: "Borzfuel Nutrition",
@@ -142,6 +182,28 @@ export default async function ProductPage({
             ? "https://schema.org/PreOrder"
             : "https://schema.org/OutOfStock",
       url: `${siteUrl}/product/${product.slug}`,
+      seller: {
+        "@id": `${siteUrl}/#organization`,
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "NO",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 2, unitCode: "d" },
+          transitTime: { "@type": "QuantitativeValue", minValue: 3, maxValue: 7, unitCode: "d" },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "NO",
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 14,
+        returnMethod: "https://schema.org/ReturnByMail",
+      },
     },
     ...(product.rating_count > 0 && {
       aggregateRating: {
@@ -158,6 +220,7 @@ export default async function ProductPage({
         reviewRating: {
           "@type": "Rating",
           ratingValue: r.rating,
+          bestRating: "5",
         },
         reviewBody: r.review.replace(/<[^>]+>/g, "").trim(),
       })),
@@ -171,6 +234,10 @@ export default async function ProductPage({
         productId={product.id}
         price={product.price}
         category={product.categories?.[0]?.name}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       <script
         type="application/ld+json"

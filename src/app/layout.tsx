@@ -16,6 +16,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://borzfuelnutrition.c
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: "/",
+  },
   title: {
     default: "Borzfuel Nutrition — Kosttilskudd for kampsport",
     template: "%s — Borzfuel Nutrition",
@@ -23,8 +26,8 @@ export const metadata: Metadata = {
   description:
     "Premium kosttilskudd utviklet for kampsportutøvere. Kreatin, leddstøtte og mer. GMP-sertifisert. Rask levering i hele Norge.",
   icons: {
-    icon: "/logo borzfuel.png",
-    apple: "/logo borzfuel.png",
+    icon: "/logo-borzfuel.png",
+    apple: "/logo-borzfuel.png",
   },
   openGraph: {
     type: "website",
@@ -54,6 +57,50 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="no" data-theme="light" style={{ colorScheme: "light" }}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": `${siteUrl}/#organization`,
+                  name: "Borzfuel DA",
+                  alternateName: "Borzfuel Nutrition",
+                  url: siteUrl,
+                  logo: {
+                    "@type": "ImageObject",
+                    url: `${siteUrl}/logo-borzfuel.png`,
+                  },
+                  email: "support@borzfuelnutrition.no",
+                  telephone: "+4798069142",
+                  taxID: "934110374",
+                  address: {
+                    "@type": "PostalAddress",
+                    streetAddress: "Gyldenprisveien 25",
+                    postalCode: "5056",
+                    addressLocality: "Bergen",
+                    addressCountry: "NO",
+                  },
+                  sameAs: [
+                    "https://www.instagram.com/borzfuelnutrition/",
+                  ],
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": `${siteUrl}/#website`,
+                  name: "Borzfuel Nutrition",
+                  url: siteUrl,
+                  publisher: { "@id": `${siteUrl}/#organization` },
+                  inLanguage: "nb-NO",
+                },
+              ],
+            }),
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} antialiased min-h-screen flex flex-col`}
         style={{ backgroundColor: "#ffffff", color: "#111111" }}

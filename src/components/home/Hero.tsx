@@ -9,6 +9,7 @@ export default function Hero() {
         muted
         loop
         playsInline
+        poster="/masse-creatine-tyggetabletter-pakker.jpg"
         className="absolute inset-0 w-full h-full object-cover opacity-60"
       >
         <source src="/bjoroyvideo.mp4" type="video/mp4" />
@@ -24,9 +25,9 @@ export default function Hero() {
           For Fighters, By Fighters
         </p>
         <h1 className="text-[clamp(2.5rem,8vw,5.5rem)] font-bold text-white uppercase tracking-tight leading-[0.95]">
-          Kreatin
+          Kosttilskudd
           <br />
-          Tyggetabletter
+          for kampsport
         </h1>
         <p className="mt-5 text-white/50 text-sm max-w-md font-light">
           Enkleste kreatinet du har prøvd. Norskprodusert for kampsportutøvere.

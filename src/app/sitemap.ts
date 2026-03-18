@@ -1,67 +1,89 @@
 import type { MetadataRoute } from "next";
 import api from "@/lib/woocommerce";
 import type { WooProduct } from "@/types/woocommerce";
+import { getBlogPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "https://borzfuelnutrition.com";
 
-  // Static pages
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: siteUrl,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${siteUrl}/butikk`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
-    {
-      url: `${siteUrl}/vilkar-personvern`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${siteUrl}/frakt-levering`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${siteUrl}/retur-reklamasjon`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${siteUrl}/kjopsvilkar`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-  ];
-
   // Dynamic product pages
+  let productPages: MetadataRoute.Sitemap = [];
+  let latestProductDate = new Date("2026-02-01");
+
   try {
-    const { data: products }: { data: WooProduct[] } = await api.get(
+    const { data: products }: { data: (WooProduct & { date_modified?: string })[] } = await api.get(
       "products",
       { per_page: 100 }
     );
 
-    const productPages: MetadataRoute.Sitemap = products.map((product) => ({
+    productPages = products.map((product) => ({
       url: `${siteUrl}/product/${product.slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
+      lastModified: product.date_modified ? new Date(product.date_modified) : new Date(),
     }));
 
-    return [...staticPages, ...productPages];
+    // Find the most recent product modification for homepage/shop
+    for (const p of products) {
+      if (p.date_modified) {
+        const d = new Date(p.date_modified);
+        if (d > latestProductDate) latestProductDate = d;
+      }
+    }
   } catch {
-    return staticPages;
+    // fallback: no product pages
   }
+
+  // Static pages with real last-modified dates
+  const staticPages: MetadataRoute.Sitemap = [
+    {
+      url: siteUrl,
+      lastModified: latestProductDate,
+    },
+    {
+      url: `${siteUrl}/butikk`,
+      lastModified: latestProductDate,
+    },
+    {
+      url: `${siteUrl}/om-oss`,
+      lastModified: new Date("2026-03-17"),
+    },
+    {
+      url: `${siteUrl}/vilkar-personvern`,
+      lastModified: new Date("2026-01-15"),
+    },
+    {
+      url: `${siteUrl}/frakt-levering`,
+      lastModified: new Date("2026-01-15"),
+    },
+    {
+      url: `${siteUrl}/retur-reklamasjon`,
+      lastModified: new Date("2026-01-15"),
+    },
+    {
+      url: `${siteUrl}/kjopsvilkar`,
+      lastModified: new Date("2026-01-15"),
+    },
+  ];
+
+  // Blog pages from WordPress
+  let blogPages: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await getBlogPosts(100);
+    if (posts.length > 0) {
+      blogPages = [
+        {
+          url: `${siteUrl}/blogg`,
+          lastModified: new Date(posts[0].modified),
+        },
+        ...posts.map((post) => ({
+          url: `${siteUrl}/blogg/${post.slug}`,
+          lastModified: new Date(post.modified),
+        })),
+      ];
+    }
+  } catch {
+    // fallback: no blog pages
+  }
+
+  return [...staticPages, ...productPages, ...blogPages];
 }

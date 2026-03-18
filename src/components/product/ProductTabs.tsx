@@ -47,49 +47,52 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
           ))}
         </div>
 
-        {/* Tab content */}
-        {tabs[activeTab]?.key === "description" && product.description && (
-          <div
-            className="product-description max-w-3xl"
-            dangerouslySetInnerHTML={{ __html: product.description }}
-          />
-        )}
-        {tabs[activeTab]?.key === "description" && !product.description && (
-          <p className="text-sm text-neutral-400">
-            Ingen beskrivelse tilgjengelig.
-          </p>
-        )}
+        {/* All tab content rendered in DOM, hidden with CSS for SEO */}
+        <div className={tabs[activeTab]?.key === "description" ? "" : "hidden"}>
+          {product.description ? (
+            <div
+              className="product-description max-w-3xl"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
+          ) : (
+            <p className="text-sm text-neutral-400">
+              Ingen beskrivelse tilgjengelig.
+            </p>
+          )}
+        </div>
 
-        {tabs[activeTab]?.key === "info" && (
-          <div className="max-w-3xl space-y-4">
-            <table className="w-full text-sm">
-              <tbody>
-                {product.weight && (
-                  <tr className="border-b border-neutral-100">
-                    <td className="py-3 font-medium text-neutral-700 w-40">
-                      Vekt
-                    </td>
-                    <td className="py-3 text-neutral-500">
-                      {product.weight} g
-                    </td>
-                  </tr>
-                )}
-                {ingredientsMeta?.value && (
-                  <tr className="border-b border-neutral-100">
-                    <td className="py-3 font-medium text-neutral-700 w-40">
-                      Ingredienser
-                    </td>
-                    <td className="py-3 text-neutral-500">
-                      {ingredientsMeta.value}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+        {hasAdditionalInfo && (
+          <div className={tabs[activeTab]?.key === "info" ? "" : "hidden"}>
+            <div className="max-w-3xl space-y-4">
+              <table className="w-full text-sm">
+                <tbody>
+                  {product.weight && (
+                    <tr className="border-b border-neutral-100">
+                      <td className="py-3 font-medium text-neutral-700 w-40">
+                        Vekt
+                      </td>
+                      <td className="py-3 text-neutral-500">
+                        {product.weight} g
+                      </td>
+                    </tr>
+                  )}
+                  {ingredientsMeta?.value && (
+                    <tr className="border-b border-neutral-100">
+                      <td className="py-3 font-medium text-neutral-700 w-40">
+                        Ingredienser
+                      </td>
+                      <td className="py-3 text-neutral-500">
+                        {ingredientsMeta.value}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
-        {tabs[activeTab]?.key === "reviews" && (
+        <div className={tabs[activeTab]?.key === "reviews" ? "" : "hidden"}>
           <ProductReviews
             reviews={reviews}
             averageRating={product.average_rating}
@@ -97,7 +100,7 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
             productId={product.id}
             embedded
           />
-        )}
+        </div>
       </div>
     </section>
   );

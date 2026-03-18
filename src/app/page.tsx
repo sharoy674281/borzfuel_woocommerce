@@ -9,7 +9,6 @@ import ImageBanner from "@/components/home/ImageBanner";
 import BrandStory from "@/components/home/BrandStory";
 import Testimonials from "@/components/home/Testimonials";
 import FAQ from "@/components/home/FAQ";
-import Newsletter from "@/components/home/Newsletter";
 import SocialGallery from "@/components/home/SocialGallery";
 
 export const revalidate = 60;
@@ -108,7 +107,6 @@ export default async function Home() {
         <FAQ />
       </div>
 
-      <Newsletter />
       <SocialGallery />
     </div>
   );

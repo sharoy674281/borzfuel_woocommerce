@@ -1,11 +1,11 @@
 import Image from "next/image";
 
 const images = [
-  { src: "https://borzfuelnutrition.com/wp-content/uploads/2025/11/PHIL.jpg", alt: "BorzFuel athlete" },
-  { src: "https://borzfuelnutrition.com/wp-content/uploads/2025/11/IMG_3253.jpg", alt: "BorzFuel training" },
-  { src: "https://borzfuelnutrition.com/wp-content/uploads/2025/11/croat.jpg", alt: "BorzFuel competition" },
-  { src: "https://borzfuelnutrition.com/wp-content/uploads/2025/11/chaborz.jpg", alt: "BorzFuel team" },
-  { src: "https://borzfuelnutrition.com/wp-content/uploads/2025/11/Chab.jpg", alt: "BorzFuel athlete" },
+  { src: "https://checkout.borzfuelnutrition.com/wp-content/uploads/2025/11/PHIL.jpg", alt: "BorzFuel athlete" },
+  { src: "https://checkout.borzfuelnutrition.com/wp-content/uploads/2025/11/IMG_3253.jpg", alt: "BorzFuel training" },
+  { src: "https://checkout.borzfuelnutrition.com/wp-content/uploads/2025/11/croat.jpg", alt: "BorzFuel competition" },
+  { src: "https://checkout.borzfuelnutrition.com/wp-content/uploads/2025/11/chaborz.jpg", alt: "BorzFuel team" },
+  { src: "https://checkout.borzfuelnutrition.com/wp-content/uploads/2025/11/Chab.jpg", alt: "BorzFuel athlete" },
 ];
 
 export default function SocialGallery() {

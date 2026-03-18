@@ -49,7 +49,7 @@ export default function Header() {
             className="absolute left-1/2 -translate-x-1/2"
           >
             <Image
-              src="/logo borzfuel.png"
+              src="/logo-borzfuel.png"
               alt="BorzFuel"
               width={120}
               height={40}

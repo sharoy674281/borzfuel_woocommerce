@@ -6,10 +6,19 @@ import ShopClient from "./ShopClient";
 
 export const revalidate = 60;
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://borzfuelnutrition.com";
+
 export const metadata: Metadata = {
-  title: "Butikk",
+  title: "Butikk — Kosttilskudd for kampsportutøvere",
   description:
-    "Utforsk vårt utvalg av kosttilskudd for kampsportutøvere. Kreatin, leddstøtte og mer. GMP-sertifisert.",
+    "Utforsk vårt utvalg av kosttilskudd utviklet for kampsportutøvere. Kreatin-tyggetabletter, leddstøtte og mer. GMP-sertifisert. Rask levering i Norge.",
+  alternates: {
+    canonical: "/butikk",
+  },
+  openGraph: {
+    url: "/butikk",
+  },
 };
 
 async function getProducts(): Promise<WooProduct[]> {
@@ -20,15 +29,45 @@ async function getProducts(): Promise<WooProduct[]> {
 export default async function ButikkPage() {
   const products = await getProducts();
 
+  const collectionLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Butikk",
+    description:
+      "Utforsk vårt utvalg av kosttilskudd for kampsportutøvere.",
+    url: `${siteUrl}/butikk`,
+    isPartOf: { "@id": `${siteUrl}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: products.length,
+      itemListElement: products.map((p, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${siteUrl}/product/${p.slug}`,
+      })),
+    },
+  };
+
   return (
     <div className="bg-white mx-auto max-w-7xl px-6 py-12">
-      <div className="mb-10 text-center">
-        <h1 className="text-2xl font-bold text-black uppercase tracking-tight">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
+      />
+
+      <div className="mb-10">
+        <h1 className="text-2xl font-bold text-black uppercase tracking-tight text-center">
           Butikk
         </h1>
-        <p className="mt-2 text-sm text-neutral-400">
-          Alle våre produkter
-        </p>
+        <div className="mt-4 max-w-2xl mx-auto text-center">
+          <p className="text-sm text-neutral-500 leading-relaxed">
+            Hos BorzFuel finner du kosttilskudd utviklet spesielt for
+            kampsportutøvere. Enten du trener MMA, bryting, jiu-jitsu eller
+            boksing — produktene våre er laget for å støtte prestasjon,
+            restitusjon og langsiktig helse. Alt er GMP-sertifisert og
+            sendes raskt til hele Norge.
+          </p>
+        </div>
       </div>
 
       <Suspense fallback={<div className="text-neutral-400 text-center">Laster...</div>}>

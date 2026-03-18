@@ -43,15 +43,25 @@ function initPixel() {
 }
 
 // Helper to track events from anywhere.
-// Because fbq has an internal queue, events are never lost —
-// they queue up and replay once fbevents.js finishes loading.
+// Auto-initializes pixel if consent was already given but pixel
+// hasn't loaded yet (fixes race condition with useEffect ordering).
 export function trackPixelEvent(
   event: string,
   data?: Record<string, unknown>
 ) {
   if (typeof window === "undefined") return;
+
+  // Auto-initialize if consent exists but pixel hasn't started yet
+  if (!pixelInitialized) {
+    if (getCookieConsent() === "all") {
+      initPixel();
+    } else {
+      return; // no consent — don't track
+    }
+  }
+
   const fbq = getFbq();
-  if (!fbq) return; // pixel not initialized (no consent)
+  if (!fbq) return;
   if (data) {
     fbq("track", event, data);
   } else {
