@@ -14,11 +14,51 @@ export const metadata: Metadata = {
   },
 };
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://borzfuelnutrition.com";
+
 export default async function BloggPage() {
   const posts = await getBlogPosts();
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Hjem", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Blogg" },
+    ],
+  };
+
+  const collectionLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Blogg",
+    description:
+      "Artikler om kreatin, leddstøtte, ernæring og kosttilskudd for kampsportutøvere.",
+    url: `${siteUrl}/blogg`,
+    isPartOf: { "@id": `${siteUrl}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: posts.length,
+      itemListElement: posts.map((post, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${siteUrl}/blogg/${post.slug}`,
+        name: stripHtml(post.title.rendered),
+      })),
+    },
+  };
+
   return (
     <div className="bg-white mx-auto max-w-7xl px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
+      />
       <nav className="flex items-center gap-2 text-[11px] text-neutral-400 uppercase tracking-[0.1em] mb-12">
         <Link href="/" className="hover:text-black transition-colors">
           Hjem
